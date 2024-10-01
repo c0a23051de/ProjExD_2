@@ -1,6 +1,7 @@
 import os
 import random
 import sys
+import time
 import pygame as pg
 
 
@@ -26,6 +27,31 @@ def check_bound(obj_rct:pg.Rect) -> tuple[bool,bool]:
     if obj_rct.top < 0 or HEIGHT < obj_rct.bottom:
         tate = False
     return yoko,tate
+def game_over(screen:pg.rect) -> tuple[bool]:
+    """
+    引数：こうかとんと爆弾がぶつかったときの背景
+    """
+    black_scr = pg.Surface((WIDTH, HEIGHT))
+    pg.draw.rect(black_scr, (0, 0, 0), black_scr.get_rect())
+    black_scr.set_alpha(180)
+    screen.blit(black_scr, (0, 0))
+
+    kk_img = pg.transform.rotozoom(pg.image.load("fig/8.png"), 0, 0.9)
+    kk_rct = kk_img.get_rect()
+    kk_rct.center = WIDTH/2+180, HEIGHT/2
+    screen.blit(kk_img, kk_rct)
+    kk_rct.center = WIDTH/2-180, HEIGHT/2
+    screen.blit(kk_img, kk_rct)
+
+    font = pg.font.Font(None, 80)  # フォント
+    gameover_font = font.render("Game Over", True, (255,255, 255))  # 白で描画
+    gameover_rct = gameover_font.get_rect()
+    gameover_rct.center = WIDTH / 2, HEIGHT / 2 
+    screen.blit(gameover_font, gameover_rct)
+
+    pg.display.update()  
+
+    time.sleep(5) 
 
 
 def main():
@@ -42,6 +68,13 @@ def main():
     bb_rct = bb_img.get_rect()  # 爆弾Rectの抽出
     bb_rct.center = random.randint(0,WIDTH),random.randint(0,HEIGHT)
 
+    # bb2_img = pg.Surface((20,20))  # からのSurface
+    # bb2_img.set_colorkey((0, 0, 0))
+    # pg.draw.circle(bb2_img, (255,0,255), (10,10), 10)
+    # vx2,vy2 = +5, -5
+    # bb2_rct = bb2_img.get_rect()  # 爆弾Rectの抽出
+    # bb2_rct.center = random.randint(0,WIDTH),random.randint(0,HEIGHT)
+
     clock = pg.time.Clock()
     tmr = 0
     while True:
@@ -50,7 +83,11 @@ def main():
                 return
         screen.blit(bg_img, [0, 0]) 
         if kk_rct.colliderect(bb_rct):  # こうかとんと爆弾がぶつかっていたら
-            return
+           game_over(screen)
+           return
+        # if kk_rct.colliderect(bb2_rct):  # こうかとんと爆弾がぶつかっていたら
+        #    game_over(screen)
+        #    return
 
         key_lst = pg.key.get_pressed()
         sum_mv = [0, 0]  # 横座標、縦座標
@@ -80,7 +117,18 @@ def main():
         screen.blit(bb_img, bb_rct)
         pg.display.update()
         tmr += 1
-        clock.tick(50)
+        clock.tick(100)
+        
+        # bb2_rct.move_ip(vx2, vy2)
+        # yoko, tate = check_bound(bb2_rct)
+        # if not yoko:
+        #     vx2 *= -1
+        # if not tate:
+        #     vy2 *= -1
+        # screen.blit(bb2_img, bb2_rct)
+        # pg.display.update()
+        # tmr += 1
+        # clock.tick(100)
 
 
 if __name__ == "__main__":
