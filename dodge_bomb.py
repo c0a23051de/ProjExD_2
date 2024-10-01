@@ -27,7 +27,7 @@ def check_bound(obj_rct):
     if obj_rct.top < 0 or HEIGHT < obj_rct.bottom:
         tate = False
     return yoko,tate
-def game_over(screen:pg.rect) -> tuple[bool]:
+def game_over(screen):
     """
     引数：こうかとんと爆弾がぶつかったときの背景
     """
