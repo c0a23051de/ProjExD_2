@@ -15,7 +15,7 @@ DELTA = {
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 
-def check_bound(obj_rct:pg.Rect) -> tuple[bool,bool]:
+def check_bound(obj_rct):
     """
     引数：こうかとん　または　爆弾のRCT
     戻り値：真理値タプル（横判定結果、縦判定結果）
